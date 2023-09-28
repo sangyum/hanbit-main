@@ -88,6 +88,14 @@ jobs:
           filename: "firebase_app_id_file.json"
           is-executable: false
           working-directory: "./ios"
+      - name: Restore GoogleService-Info.plist
+        uses: mobiledevops/secret-to-file-action@v1
+        with:
+          base64-encoded-secret: ${{ secrets.FIREBASE_IOS_GOOGLE_SERVICE_INFO_PLIST }}
+          filename: "GoogleService-Info.plist"
+          is-executable: false
+          working-directory: "./ios/Runner"
+  
 
       - name: Make envfile
         uses: SpicyPizza/create-envfile@v2.0
@@ -131,6 +139,15 @@ jobs:
           filename: "firebase_app_id_file.json"
           is-executable: false
           working-directory: "./macos"
+
+      - name: Restore GoogleService-Info.plist
+        uses: mobiledevops/secret-to-file-action@v1
+        with:
+          base64-encoded-secret: ${{ secrets.FIREBASE_MACOS_GOOGLE_SERVICE_INFO_PLIST }}
+          filename: "GoogleService-Info.plist"
+          is-executable: false
+          working-directory: "./macos/Runner"
+  
 
       - name: Make envfile
         uses: SpicyPizza/create-envfile@v2.0
