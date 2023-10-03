@@ -1,199 +1,199 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+# # This workflow uses actions that are not certified by GitHub.
+# # They are provided by a third-party and are governed by
+# # separate terms of service, privacy policy, and support
+# # documentation.
 
-name: Dart
+# name: Dart
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
 
-jobs:
-  test:
-    name: "Run unit tests"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable' # or: 'beta', 'dev' or 'master'
-          cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
-          architecture: x64 # optional, x64 or arm64
-      - run: flutter --version
-      - run: flutter pub get
-      - run: flutter test
+# jobs:
+#   test:
+#     name: "Run unit tests"
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: subosito/flutter-action@v2
+#         with:
+#           channel: 'stable' # or: 'beta', 'dev' or 'master'
+#           cache: true
+#           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+#           cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+#           architecture: x64 # optional, x64 or arm64
+#       - run: flutter --version
+#       - run: flutter pub get
+#       - run: flutter test
 
-  build:
-    name: "Build Android client"
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: actions/checkout@v3
-      - name: Restore google-services.json
-        uses: mobiledevops/secret-to-file-action@v1
-        with:
-          base64-encoded-secret: ${{ secrets.FIREBASE_ANDROID_GOOGLE_SERVICE_JSON }}
-          filename: "google-services.json"
-          is-executable: false
-          working-directory: "./android/app"
+#   build:
+#     name: "Build Android client"
+#     runs-on: ubuntu-latest
+#     needs: test
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Restore google-services.json
+#         uses: mobiledevops/secret-to-file-action@v1
+#         with:
+#           base64-encoded-secret: ${{ secrets.FIREBASE_ANDROID_GOOGLE_SERVICE_JSON }}
+#           filename: "google-services.json"
+#           is-executable: false
+#           working-directory: "./android/app"
 
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          envkey_FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
-          envkey_FIREBASE_ANDROID_API_KEY: ${{ secrets.FIREBASE_ANDROID_API_KEY }}
-          envkey_FIREBASE_APPLE_API_KEY: ${{ secrets.IREBASE_APPLE_API_KEY }}
-          envkey_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          envkey_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-          envkey_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          envkey_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-          envkey_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          envkey_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-          envkey_FIREBASE_IOS_BUNDLE_ID: ${{ secrets.FIREBASE_IOS_BUNDLE_ID }}
-          fail_on_empty: false
-          sort_keys: false          
+#       - name: Make envfile
+#         uses: SpicyPizza/create-envfile@v2.0
+#         with:
+#           envkey_FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
+#           envkey_FIREBASE_ANDROID_API_KEY: ${{ secrets.FIREBASE_ANDROID_API_KEY }}
+#           envkey_FIREBASE_APPLE_API_KEY: ${{ secrets.IREBASE_APPLE_API_KEY }}
+#           envkey_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+#           envkey_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+#           envkey_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+#           envkey_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+#           envkey_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+#           envkey_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+#           envkey_FIREBASE_IOS_BUNDLE_ID: ${{ secrets.FIREBASE_IOS_BUNDLE_ID }}
+#           fail_on_empty: false
+#           sort_keys: false          
 
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable' # or: 'beta', 'dev' or 'master'
-          cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
-          architecture: x64 # optional, x64 or arm64
-      - run: flutter --version
-      - run: flutter pub get
-      - run: flutter build apk --dart-define-from-file=.env
-      - run: flutter build appbundle --dart-define-from-file=.env
-      - run: ls build/app/outputs/flutter-apk
+#       - uses: actions/setup-java@v3
+#         with:
+#           distribution: 'temurin'
+#           java-version: '11'
+#       - uses: subosito/flutter-action@v2
+#         with:
+#           channel: 'stable' # or: 'beta', 'dev' or 'master'
+#           cache: true
+#           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+#           cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+#           architecture: x64 # optional, x64 or arm64
+#       - run: flutter --version
+#       - run: flutter pub get
+#       - run: flutter build apk --dart-define-from-file=.env
+#       - run: flutter build appbundle --dart-define-from-file=.env
+#       - run: ls build/app/outputs/flutter-apk
 
-  ios-build:
-    name: "Build iOS client"
-    needs: test
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Restore firebase_app_id_file.json
-        uses: mobiledevops/secret-to-file-action@v1
-        with:
-          base64-encoded-secret: ${{ secrets.FIREBASE_IO_APP_ID_FILE_JSON }}
-          filename: "firebase_app_id_file.json"
-          is-executable: false
-          working-directory: "./ios"
-      - name: Restore GoogleService-Info.plist
-        uses: mobiledevops/secret-to-file-action@v1
-        with:
-          base64-encoded-secret: ${{ secrets.FIREBASE_IOS_GOOGLE_SERVICE_INFO_PLIST }}
-          filename: "GoogleService-Info.plist"
-          is-executable: false
-          working-directory: "./ios/Runner"
+#   ios-build:
+#     name: "Build iOS client"
+#     needs: test
+#     runs-on: macos-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Restore firebase_app_id_file.json
+#         uses: mobiledevops/secret-to-file-action@v1
+#         with:
+#           base64-encoded-secret: ${{ secrets.FIREBASE_IO_APP_ID_FILE_JSON }}
+#           filename: "firebase_app_id_file.json"
+#           is-executable: false
+#           working-directory: "./ios"
+#       - name: Restore GoogleService-Info.plist
+#         uses: mobiledevops/secret-to-file-action@v1
+#         with:
+#           base64-encoded-secret: ${{ secrets.FIREBASE_IOS_GOOGLE_SERVICE_INFO_PLIST }}
+#           filename: "GoogleService-Info.plist"
+#           is-executable: false
+#           working-directory: "./ios/Runner"
   
 
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          envkey_FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
-          envkey_FIREBASE_ANDROID_API_KEY: ${{ secrets.FIREBASE_ANDROID_API_KEY }}
-          envkey_FIREBASE_APPLE_API_KEY: ${{ secrets.IREBASE_APPLE_API_KEY }}
-          envkey_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          envkey_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-          envkey_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          envkey_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-          envkey_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          envkey_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-          envkey_FIREBASE_IOS_BUNDLE_ID: ${{ secrets.FIREBASE_IOS_BUNDLE_ID }}
-          fail_on_empty: false
-          sort_keys: false          
+#       - name: Make envfile
+#         uses: SpicyPizza/create-envfile@v2.0
+#         with:
+#           envkey_FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
+#           envkey_FIREBASE_ANDROID_API_KEY: ${{ secrets.FIREBASE_ANDROID_API_KEY }}
+#           envkey_FIREBASE_APPLE_API_KEY: ${{ secrets.IREBASE_APPLE_API_KEY }}
+#           envkey_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+#           envkey_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+#           envkey_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+#           envkey_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+#           envkey_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+#           envkey_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+#           envkey_FIREBASE_IOS_BUNDLE_ID: ${{ secrets.FIREBASE_IOS_BUNDLE_ID }}
+#           fail_on_empty: false
+#           sort_keys: false          
   
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
-          architecture: x64 # optional, x64 or arm64
+#       - uses: subosito/flutter-action@v2
+#         with:
+#           channel: 'stable'
+#           cache: true
+#           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+#           cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+#           architecture: x64 # optional, x64 or arm64
 
-      - run: flutter --version
-      - run: flutter pub get
-      - run: flutter build ios --release --no-codesign --dart-define-from-file=.env
-      - run: ls build/ios/iphoneos
+#       - run: flutter --version
+#       - run: flutter pub get
+#       - run: flutter build ios --release --no-codesign --dart-define-from-file=.env
+#       - run: ls build/ios/iphoneos
 
-  macos-build:
-    name: "Build macOS client"
-    needs: test
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Restore firebase_app_id_file.json
-        uses: mobiledevops/secret-to-file-action@v1
-        with:
-          base64-encoded-secret: ${{ secrets.FIREBASE_IO_APP_ID_FILE_JSON }}
-          filename: "firebase_app_id_file.json"
-          is-executable: false
-          working-directory: "./macos"
+#   macos-build:
+#     name: "Build macOS client"
+#     needs: test
+#     runs-on: macos-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Restore firebase_app_id_file.json
+#         uses: mobiledevops/secret-to-file-action@v1
+#         with:
+#           base64-encoded-secret: ${{ secrets.FIREBASE_IO_APP_ID_FILE_JSON }}
+#           filename: "firebase_app_id_file.json"
+#           is-executable: false
+#           working-directory: "./macos"
 
-      - name: Restore GoogleService-Info.plist
-        uses: mobiledevops/secret-to-file-action@v1
-        with:
-          base64-encoded-secret: ${{ secrets.FIREBASE_MACOS_GOOGLE_SERVICE_INFO_PLIST }}
-          filename: "GoogleService-Info.plist"
-          is-executable: false
-          working-directory: "./macos/Runner"
+#       - name: Restore GoogleService-Info.plist
+#         uses: mobiledevops/secret-to-file-action@v1
+#         with:
+#           base64-encoded-secret: ${{ secrets.FIREBASE_MACOS_GOOGLE_SERVICE_INFO_PLIST }}
+#           filename: "GoogleService-Info.plist"
+#           is-executable: false
+#           working-directory: "./macos/Runner"
   
 
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          envkey_FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
-          envkey_FIREBASE_ANDROID_API_KEY: ${{ secrets.FIREBASE_ANDROID_API_KEY }}
-          envkey_FIREBASE_APPLE_API_KEY: ${{ secrets.IREBASE_APPLE_API_KEY }}
-          envkey_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          envkey_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-          envkey_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          envkey_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-          envkey_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          envkey_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-          envkey_FIREBASE_IOS_BUNDLE_ID: ${{ secrets.FIREBASE_IOS_BUNDLE_ID }}
-          fail_on_empty: false
-          sort_keys: false          
+#       - name: Make envfile
+#         uses: SpicyPizza/create-envfile@v2.0
+#         with:
+#           envkey_FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
+#           envkey_FIREBASE_ANDROID_API_KEY: ${{ secrets.FIREBASE_ANDROID_API_KEY }}
+#           envkey_FIREBASE_APPLE_API_KEY: ${{ secrets.IREBASE_APPLE_API_KEY }}
+#           envkey_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+#           envkey_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+#           envkey_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+#           envkey_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+#           envkey_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+#           envkey_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+#           envkey_FIREBASE_IOS_BUNDLE_ID: ${{ secrets.FIREBASE_IOS_BUNDLE_ID }}
+#           fail_on_empty: false
+#           sort_keys: false          
     
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
-          architecture: x64 # optional, x64 or arm64
+#       - uses: subosito/flutter-action@v2
+#         with:
+#           channel: 'stable'
+#           cache: true
+#           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+#           cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+#           architecture: x64 # optional, x64 or arm64
 
-      - run: flutter --version
-      - run: flutter pub get
-      - run: flutter config --enable-macos-desktop
-      - run: flutter build macos --dart-define-from-file=.env
-      - run: ls build/macos/Build/Products
+#       - run: flutter --version
+#       - run: flutter pub get
+#       - run: flutter config --enable-macos-desktop
+#       - run: flutter build macos --dart-define-from-file=.env
+#       - run: ls build/macos/Build/Products
       
-  web-build:
-    name: "Build web client"
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
-          architecture: x64 # optional, x64 or arm64
+#   web-build:
+#     name: "Build web client"
+#     needs: test
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: subosito/flutter-action@v2
+#         with:
+#           channel: 'stable'
+#           cache: true
+#           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+#           cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+#           architecture: x64 # optional, x64 or arm64
 
-      - run: flutter pub get
-      - run: flutter test
-      - run: flutter build web
-      - run: ls build/web
+#       - run: flutter pub get
+#       - run: flutter test
+#       - run: flutter build web
+#       - run: ls build/web
